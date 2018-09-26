@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+usage() { echo "Usage: build_proto [-r project_name] [-p project_name]" 1>&2; exit 1;  }
+
+list_proto=$(git ls-files -om | grep "\.proto")
+list_proto="${list_proto//$'\n'/ }"
+while getopts ":r:p:" opt; do
+  case ${opt} in
+    r ) # process option r
+      r=${OPTARG}
+      protoc --proto_path=. --ruby_out=../$r/lib/ $list_proto
+      ;;
+    p ) # process option p
+      p=${OPTARG}
+      protoc --proto_path=. --python_out=../$p/ $list_proto
+      ;;
+    \? ) usage
+      ;;
+  esac
+done
